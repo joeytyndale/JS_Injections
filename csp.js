@@ -4,6 +4,49 @@
 
 // Random Test Function -- Ignore
 
+function testActivationLink(jsessionid,accountId){
+
+	// Need to get the profile ID for the profile we're looking at
+
+	var url = window.location.href;
+	var num1 = Number(url.indexOf("profiles/")) + 9;
+	var num2 = Number(url.indexOf("/licenses"));
+
+	var profileId = url.substring(num1,num2);
+
+	var apiUrl = 'https://customer.www.linkedin.com/csp-api/profiles/($params:(),account:urn%3Ali%3AenterpriseAccount%3A' + String(accountId) + ',profileId:' + String(profileId) + ')';
+	$.ajax({
+		url: apiUrl,
+		headers: {
+			'Csrf-Token': jsessionid.replace(/"/g, ''),
+			'X-RestLi-Protocol-Version' : '2.0.0',
+			'Accept': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest',
+		},
+		success: function(data){
+			console.log("Found profile stuffs");
+			console.log(data);
+
+			var activationLink = 'https://www.linkedin.com/learning/memberbinding?u=' + String(accountId) + '&auth=true&identity=' + String(data.profileIdentity)
+
+			var ALButton = document.createElement('BUTTON');
+			ALButton.setAttribute('class','artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view');
+			ALButton.innerHTML = "Show Activation Link";
+			ALButton.setAttribute('style','margin-left:8px');
+			ALButton.setAttribute('onclick','alert(\'' + activationLink + '\')');
+
+			$('#customTableRow').append(ALButton);
+		}
+	})
+}
+
+
+
+
+
+// END RANDOM TEST STUFF
+
+
 function findAdmin(jsessionid, accountId, companyId, instanceStep=0){
 	//BEGIN FULL ADMIN FUNCTION
 
@@ -69,6 +112,12 @@ function findAdmin(jsessionid, accountId, companyId, instanceStep=0){
 									liasButton.setAttribute('onclick','$(\'#myLiasForm\').submit()');
 	
 									$('#customTableRow').append(liasButton);
+
+									// More Testing stuff
+
+									testActivationLink(jsessionid,accountId);
+
+									// End more testing stuff
 	
 								}
 							});
