@@ -20,6 +20,7 @@ function spawnNotification(mutationList, observer) {
                         var callVariable = "";
                         
                         if($('.call-var-value-text').length > 1){
+							console.log($('.call-var-value-text'));
                             callVariable = $('.call-var-value-text')[6].innerHTML;
                         }else{
                             callVariable = "none";
