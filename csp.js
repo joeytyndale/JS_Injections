@@ -7,7 +7,7 @@ function activationLink(info){
 
 	var ALButton = document.createElement('BUTTON');
 	ALButton.setAttribute('class','artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view');
-	ALButton.innerHTML = "Show Activation Link";
+	ALButton.innerHTML = "Copy Activation Link";
 	ALButton.setAttribute('style','margin-left:8px');
 	ALButton.setAttribute('onclick','navigator.clipboard.writeText(\'' + activationLink + '\').then(() => { let x = new Notification(\'Activation link copied to cliboard!\')})');
 
