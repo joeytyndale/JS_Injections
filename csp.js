@@ -9,7 +9,7 @@ function activationLink(info){
 	ALButton.setAttribute('class','artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view');
 	ALButton.innerHTML = "Show Activation Link";
 	ALButton.setAttribute('style','margin-left:8px');
-	ALButton.setAttribute('onclick','alert(\'' + activationLink + '\')');
+	ALButton.setAttribute('onclick','navigator.clipboard.writeText(\'' + activationLink + '\').then(() => { let x = new Notification(\'Activation link copied to cliboard!\')})');
 
 	$('#customTableRow').append(ALButton);
 }
@@ -36,10 +36,8 @@ function findAdmin(info,instanceStep=0){
 					admin.associatedApplicationInstances.forEach((application) => {
 						if(application.licenseAssignments.length > 0){
 							application.roleAssignments.forEach((role) => {
-								//console.log(role.role.split(',')[1])
 								if(role.role.split(',')[1] == "LearningProductAdmin)"){
-									//console.log(admin)
-	
+
 									foundFullAdmin = true;								   
 
 									var liasURL = `https://www.linkedin.com/checkpoint/enterprise/loginAsSeat/${String(info.accountId)}?enterpriseProfileId=${String(admin.profileId)}&amp;enterpriseApplication=learning&amp;applicationInstanceId=${String(info.instanceData.key.id)}&amp;redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning-admin%2Fpeople%2Fusers%2F${String(info.profileData.profileIdentity)}%2Flicenses%3Faccount%3D${String(info.accountId)}%26appInstanceId%3D${String(info.instanceData.key.id)}`;
@@ -180,18 +178,16 @@ function findLilInstance(info, step=0){
 
 $(document).ready(() => {    // Script starts here
 
+
+	if(Notification.permission !== "granted"){
+		Notification.requestPermission();
+	}
+
 	// Initiate a loop to look for a <table> on the page. Despite jquery .ready() the elements are still loading we need the <table> to exist before beginning
 	var verification = setInterval(function(){
 		if($('table').length > 0){
 
-			// We need to collect all of our variables here and disperse them accordingly
-			// Variables needed:
-			// Profile ID
-			// Account ID
-			// Company ID
-			// jsession ID
-			// profileIdentity
-
+			// Collecting variables
 			var info = {
 				profileId : "",
 				accountId : "",
@@ -235,7 +231,7 @@ $(document).ready(() => {    // Script starts here
 				}
 			});
 
-			// get instanceData | placing in function due to need for steping through multiple GET requests
+			// get instanceData | placing in function due to potential need for steping through multiple GET requests
 			info.instanceData = findLilInstance(info);
 
 			console.log(info);
@@ -248,7 +244,6 @@ $(document).ready(() => {    // Script starts here
 			findAdmin(info);
 
 			activationLink(info);
-
 			
 		}
 	}, 500);
