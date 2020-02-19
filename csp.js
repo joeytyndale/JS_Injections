@@ -282,7 +282,7 @@ function start(){
 							<button id="${unbindButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Unbind</button>
 						</p>
 						<p class="ember-view">
-							<button id="${liasButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Login in as user</button>
+							<button id="${liasButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Login as user</button>
 						</p>
 						<p class="ember-view">
 							<button class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view" onclick="copyToClipboard('https://www.linkedin.com/learning/memberbinding?u=${String(info.accountId)}&auth=true&identity=${String(info.profileData.profileIdentity)}')">Copy Activation Link</button>
