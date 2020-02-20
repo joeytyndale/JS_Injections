@@ -31,6 +31,7 @@ $(document).ready(() => {
 
                     var blockTitle = document.createElement("DT");
                     blockTitle.innerHTML = "&#9939;";
+		    blockTitle.setAttribute("style","text-overflow:clip");
                     
                     var blockContent = document.createElement("DD");
                     blockContent.appendChild(profileButton);
