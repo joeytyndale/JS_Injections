@@ -25,7 +25,7 @@ $(document).ready(() => {
                     var profileURL = "https://customer.www.linkedin.com/support/account/urn:li:enterpriseAccount:" + accountId + "/profiles/" + profileId + "/licenses";
 
                     var profileButton = document.createElement("A");
-                    profileButton.innerHTML = `${companyName}(${accountId}) - Profile: ${profileId}`;
+                    profileButton.innerHTML = `${license.companyName} (${accountId})`;
                     profileButton.setAttribute("href",profileURL);
                     profileButton.setAttribute("target","_blank");
 
