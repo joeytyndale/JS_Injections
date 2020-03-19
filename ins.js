@@ -25,13 +25,13 @@ $(document).ready(() => {
                     var profileURL = "https://customer.www.linkedin.com/support/account/urn:li:enterpriseAccount:" + accountId + "/profiles/" + profileId + "/licenses";
 
                     var profileButton = document.createElement("A");
-                    profileButton.innerHTML = `Profile: ${profileId} Acct: ${accountId}`;
+                    profileButton.innerHTML = `${companyName}(${accountId}) - Profile: ${profileId} Acct: ${accountI}`;
                     profileButton.setAttribute("href",profileURL);
                     profileButton.setAttribute("target","_blank");
 
                     var blockTitle = document.createElement("DT");
                     blockTitle.innerHTML = "&#9939;";
-		    blockTitle.setAttribute("style","text-overflow:clip");
+                    blockTitle.setAttribute("style","text-overflow:clip");
                     
                     var blockContent = document.createElement("DD");
                     blockContent.appendChild(profileButton);
