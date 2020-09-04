@@ -187,7 +187,9 @@ function start(){
 			clearInterval(verification);
 			
 			// The unbind button seems to have a JS handler tracking its ID. Problem is that the ID changes from time to time. So to make my own button I'm just gonna copy the one that's here and paste it in where I want it
-			var unbindButtonId = $('.profile-unbind-modal button')[0].id;
+			if($('.profile-unbind-modal button').length > 0){
+				var unbindButtonId = $('.profile-unbind-modal button')[0].id;	
+			}else{ var unbindButtonId=0;}
 
 			// Same thing as the unbind button but for Lias button
 			var liasButtonId = $('.app-instance-cell button')[0].id;
@@ -210,7 +212,6 @@ function start(){
 						margin: 5px 0;
 					}
 					.header-block h4 {
-						width: 140px;
 						padding: 3px;
 						color: #000;
 					}
@@ -219,7 +220,6 @@ function start(){
 					}
 					.sub-block{
 						box-sizing: border-box;
-						padding: 10px 10px 10px 150px;
 						border-top: 1px dashed #0073b1;
 					}
 					.header-block span{
@@ -237,12 +237,49 @@ function start(){
 						font-size: 1.4rem;
 					}
 					.field-label{
-						font-style: italic;
 						display: inline-block;
 						width: 200px;
 						font-weight: 900;
 						color:#7b7b7b;
 					}
+					.logo-text{
+	display: none;
+}
+div.profile-header.ember-view{
+    display: inline-block;
+}
+.artdeco-entity-lockup--size-3 .artdeco-entity-lockup__subtitle, .artdeco-entity-lockup--size-3 .artdeco-entity-lockup__title {
+    color: white;
+}
+#user-block{
+    float: left;
+    width: 45%;
+    background-color: white;
+    padding: 20px;
+}
+#license-block{
+    float: right;
+    width: 37%;
+    background-color: white;
+    padding: 20px;
+    min-height: 216px;
+}
+#company-block{
+    height: 115px !important;
+    background: white;
+    display: inline-flex;
+    padding: 20px;
+    margin: 20px 0;
+}
+button.artdeco-button__text.artdeco-button.artdeco-button--1.artdeco-button--primary.ember-view{
+    display: inline-block;
+    float: left;
+    margin: 5px 3px;
+    border: none;
+}
+#user_and_status_Block{
+	display: flex;
+}
 				</style>
 				<script>
 					function copyToClipboard(copyString, noti=true){
@@ -257,23 +294,30 @@ function start(){
 			);
 
 			$('.profile-header').append( `
-				<div id="user-block" class="header-block">
+				<div id="user_and_status_Block"><div id="user-block" class="header-block">
 					<h4 class="artdeco-entity-lockup__title ember-view">User Profile</h4>
 					<div class="sub-block">
-						<p class="ember-view"><span class="field-label">Name:</span> <span onclick="copyToClipboard('${info.profileData.preferredFirstName} ${info.profileData.preferredLastName}')">${info.profileData.preferredFirstName} ${info.profileData.preferredLastName} ${clpIcon}</span></p>
-						<p class="ember-view"><span class="field-label">Email:</span> <span onclick="copyToClipboard('${info.profileData.primaryEmailAddress}')">${info.profileData.primaryEmailAddress} ${clpIcon}</span></p>
-						<p class="ember-view"><span class="field-label">Azure Email:</span> <span onclick="copyToClipboard('${info.profileData.azureB2CEmailAddress}')">${info.profileData.azureB2CEmailAddress} ${clpIcon}</span></p>
-						<br />
+						<p class="ember-view"><span class="field-label">Member's name: </span> <span onclick="copyToClipboard('${info.profileData.preferredFirstName} ${info.profileData.preferredLastName}')">${info.profileData.preferredFirstName} ${info.profileData.preferredLastName} ${clpIcon}</span></p>
+						<p class="ember-view"><span class="field-label">Member's email: </span> <span onclick="copyToClipboard('${info.profileData.primaryEmailAddress}')">${info.profileData.primaryEmailAddress} ${clpIcon}</span></p>
+							<p class="ember-view"><span class="field-label">Azure Email: </span> <span onclick="copyToClipboard('${info.profileData.azureB2CEmailAddress}')">${info.profileData.azureB2CEmailAddress} ${clpIcon}</span></p>
+						<p class="ember-view"><span class="field-label">Profile ID: </span> <span onclick="copyToClipboard('${info.profileId}')">${info.profileId} ${clpIcon}</span></p>
+							<p class="ember-view"><span class="field-label">Account ID: </span> <span onclick="copyToClipboard('${info.accountId}')">${info.accountId} ${clpIcon}</span></p> 
+							<br>
 						<p class="ember=view"><span class="field-label">User Status:</span> ${info.profileData.workerStatus}</p>
-						<p class="ember-view"><span class="field-label">Profile ID:</span> <span onclick="copyToClipboard('${info.profileId}')">${info.profileId} ${clpIcon}</span></p>
-						<p class="ember-view"><span class="field-label">Unique ID:</span> <span onclick="copyToClipboard('${info.profileData.uniqueUserId}')">${info.profileData.uniqueUserId} ${clpIcon}</span></p>
+						<p class="ember-view"><span class="field-label">External ID:</span> <span onclick="copyToClipboard('${info.profileData.uniqueUserId}')">${info.profileData.uniqueUserId} ${clpIcon}</span></p>
 						<p class="ember-view"><button onclick="$('#myLiasForm').submit()" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Open As Full Admin</button></p>
+						
+<p class="ember-view"><button class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view" onclick="copyToClipboard('• MID (if different from the top card of OSC): ${info.mid} (${info.profileData.memberBindingStatus})\\n• Member\\'s name (if different from the top card of OSC/Unbound member): ${info.profileData.preferredFirstName} ${info.profileData.preferredLastName}\\n• Member\\'s email (if different from the top card of OSC/Unbound member): ${info.profileData.primaryEmailAddress}\\n• Profile ID: ${info.profileId}\\n• Account ID: ${info.accountId}\\n• Profile Requirement (i.e. SSO: Profile Required): ${info.authType}\\n• Scheduled upgrade date: NA\\n• Lock out or Auto-Upgrade date:NA\\n• Pilot or trial: NA\\n• Total contract value (TVC): NA\\n• Length of the pilot/trial: NA\\n• Detailed description of the issue: \\n• Troubleshooting that has been completed:\\n• Exact steps to reproduce:\\n• Actual results (what is currently happening):\\n• Expected results (what should be happening):\\n\\nThanks! ')">
+
+Copy LTRR Details</button></p>
+
+
 					</div>
 				</div>
 				<div id="license-block" class="header-block">
-					<h4 class="artdeco=entity-lockup__title ember-view">License</h4>
+					<h4 class="artdeco=entity-lockup__title ember-view">License & Instance</h4>
 					<div class="sub-block">
-						<p class="ember-view"><span class="field-label">Activation Status:</span> ${info.profileData.licenseAssignments[0].status}</p> 
+						<p class="ember-view"><span class="field-label">Activation Status:</span><strong> ${info.profileData.licenseAssignments[0].status}</strong></p> 
 						<p class="ember-view"><span class="field-label">Activated On:</span> ${String(new Date(info.profileData.licenseAssignments[0].activatedAt)).substring(0,15)} </p>
 						<p class="ember-view"><span class="field-label">Binding Status:</span> ${info.profileData.memberBindingStatus}</p>
 						<br />
@@ -282,18 +326,18 @@ function start(){
 							<button id="${unbindButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Unbind</button>
 						</p>
 						<p class="ember-view">
-							<button id="${liasButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Login as user</button>
+							<button id="${liasButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Login in as user</button>
 						</p>
 						<p class="ember-view">
 							<button class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view" onclick="copyToClipboard('https://www.linkedin.com/learning/memberbinding?u=${String(info.accountId)}&auth=true&identity=${String(info.profileData.profileIdentity)}')">Copy Activation Link</button>
 						</p>
 					</div>
-				</div>
+				</div> </div>
 				<div id="company-block" class="header-block">
-					<h4 class="artdeco=entity-lockup__title ember-view">Instance</h4>
+					
 					<div class="sub-block">
 						<p class="ember-view"><span class="field-label">Instance Name:</span> <a target="_blank" href="https://customer.www.linkedin.com/support/product/urn%3Ali%3AenterpriseApplicationInstance%3A(urn%3Ali%3AenterpriseAccount%3A${String(info.accountId)},${String(info.instanceData.key.id)})">${info.instanceData.name} ${hyperlinkIcon}</a></p>
-						<p class="ember-view"><span class="field-label" onclick="copyToClipboard('${info.authType')">Profile Requirement:</span> ${info.authType}</p>
+							<p class="ember-view"><span class="field-label">Profile Requirement: </span><strong> ${info.authType}<strong><span onclick="copyToClipboard('${info.authType}')"> ${clpIcon}</span></p>
 						<p class="ember-view"><span class="field-label">Instance Status:</span> ${info.instanceData.status}</p>
 						<br />
 						<p class="ember-view"><span class="field-label">Total Licenses:</span> ${info.instanceData.licenseSummaries[0].allocatedCount}</p>
