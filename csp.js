@@ -337,7 +337,14 @@ Copy LTRR Details</button></p>
 					
 					<div class="sub-block">
 						<p class="ember-view"><span class="field-label">Instance Name:</span> <a target="_blank" href="https://customer.www.linkedin.com/support/product/urn%3Ali%3AenterpriseApplicationInstance%3A(urn%3Ali%3AenterpriseAccount%3A${String(info.accountId)},${String(info.instanceData.key.id)})">${info.instanceData.name} ${hyperlinkIcon}</a></p>
-							<p class="ember-view"><span class="field-label">Profile Requirement: </span><strong> ${info.authType}<strong><span onclick="copyToClipboard('${info.authType}')"> ${clpIcon}</span></p>
+							<p class="ember-view">
+								<span class="field-label">Profile Requirement: </span>
+									<strong>
+										<span onclick="copyToClipboard('${info.authType}')">
+											${info.authType} ${clpIcon}
+										</span>
+									</strong>
+							</p>
 						<p class="ember-view"><span class="field-label">Instance Status:</span> ${info.instanceData.status}</p>
 						<br />
 						<p class="ember-view"><span class="field-label">Total Licenses:</span> ${info.instanceData.licenseSummaries[0].allocatedCount}</p>
