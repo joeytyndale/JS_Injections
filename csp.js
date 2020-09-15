@@ -76,7 +76,7 @@ info.instanceData.authentications.forEach((authType) => {
 
 
 
-/////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
 
 function apiRequest(url,headers){
 	// Takes a URL and Headers and returns the raw API response
@@ -91,6 +91,10 @@ function apiRequest(url,headers){
 	});
 	return d;
 }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 
 function findLilInstance(info, step=0){
 
@@ -113,6 +117,8 @@ function findLilInstance(info, step=0){
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+
 // Same deal here as with findLilInstance, we need to potentially iterate through a good deal of admins to find a full admin which is why we used a function. 
 // This function is called at the end of the start() function. This just adds a hidden form to the page that we reference with its ID "myLiasForm" via a hard coded button.
 function findAdmin(info,instanceStep=0){
@@ -123,7 +129,7 @@ function findAdmin(info,instanceStep=0){
 			admin.associatedApplicationInstances.forEach((application) => {
 				if(application.licenseAssignments.length > 0){
 					application.roleAssignments.forEach((role) => {
-						if(role.role.split(',')[1] == "LearningProductAdmin)"){
+						if(role.role.indexOf("LearningProductAdmin") > -1){
 
 							foundFullAdmin = true;								   
 
@@ -169,6 +175,44 @@ function findAdmin(info,instanceStep=0){
 	}
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+function buildForms(info){
+	
+	let userLiasForm = document.createElement("FORM")
+	userLiasForm.setAttribute('action', `https://www.linkedin.com/checkpoint/enterprise/loginAsSeat/${String(info.accountId)}?enterpriseProfileId=${String(info.profileId)}&amp;enterpriseApplication=learning&amp;applicationInstanceId=${String(info.instanceData.key.id)}&amp;redirect=https%3A%2F%2Fwww%2Elinkedin%2Ecom%2Flearning`)
+	userLiasForm.setAttribute('method','POST');
+	userLiasForm.setAttribute('target','_blank');
+	userLiasForm.setAttribute('id','userLiasForm')
+
+	let userLiasInput1 = document.createElement("INPUT");
+	userLiasInput1.setAttribute('name','csrfToken');
+	userLiasInput1.setAttribute('value',info.headers['Csrf-Token']);
+
+	var userLiasInput2 = document.createElement("INPUT");
+	userLiasInput2.setAttribute('name','accountId');
+	userLiasInput2.setAttribute('value',info.accountId);
+
+	var userLiasInput3 = document.createElement("INPUT");
+	userLiasInput3.setAttribute('name','enterpriseApplication');
+	userLiasInput3.setAttribute('value','learning');
+
+	var userLiasInput4 = document.createElement("INPUT");
+	userLiasInput4.setAttribute('name','enterpriseProfileId');
+	userLiasInput4.setAttribute('value',info.profileId)
+
+	userLiasForm.appendChild(userLiasInput1);
+	userLiasForm.appendChild(userLiasInput2);
+	userLiasForm.appendChild(userLiasInput3);
+	userLiasForm.appendChild(userLiasInput4);
+
+	$('body').append(userLiasForm);
+	
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
 
 
 function start(){
@@ -323,10 +367,10 @@ Copy LTRR Details</button></p>
 						<br />
 						<p class="ember-view"><span class="field-label">Member ID:</span> <a target="_blank" href="https://cstool.www.linkedin.com/cstool/members/${info.mid}">${info.mid}${hyperlinkIcon}</a><span onclick="copyToClipboard('${info.mid}')">${clpIcon}</span></p>
 						<p class="ember-view">
-							<button id="${unbindButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Unbind</button>
+							<button onclick=($("#${unbindButtonId} span").click()) class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Unbind</button>
 						</p>
 						<p class="ember-view">
-							<button id="${liasButtonId}" class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Login in as user</button>
+							<button onclick=($('#userLiasForm').submit()) class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view">Login as user</button>
 						</p>
 						<p class="ember-view">
 							<button class="artdeco-button__text artdeco-button artdeco-button--1 artdeco-button--primary ember-view" onclick="copyToClipboard('https://www.linkedin.com/learning/memberbinding?u=${String(info.accountId)}&auth=true&identity=${String(info.profileData.profileIdentity)}')">Copy Activation Link</button>
@@ -358,6 +402,7 @@ Copy LTRR Details</button></p>
 
 			//Finish everything by finding a full admin and adding a LIAS form to the page
 			findAdmin(info);
+			buildForms(info); //This one adds lias for the actual member and an unbind form
 			
 		}
 	}, 500);
