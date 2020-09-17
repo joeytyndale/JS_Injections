@@ -32,3 +32,43 @@ var user_info = {
     profile_data : ''
 }
 
+function get_user_information(){
+    var url = window.location.href;
+    // Set profile_id
+    user_info.profile_id = url.substring(Number(url.indexOf("profiles/")) + 9,Number(url.indexOf("/licenses"))); 
+    // Set account_id
+    user_info.account_id = url.substring(Number(url.indexOf("Account:")) + 8, Number(url.indexOf("/profiles")));
+
+    // Set jsessionID
+    document.cookie.split(';').forEach((cookie) => {
+        if ( cookie.split('=')[0].trim() == 'JSESSIONID' ){
+            user_info.headers['Csrf-Token'] = cookie.split('=')[1].trim().replace(/"/g, '');
+        }
+    });
+    if ( user_info.headers['Csrf-Token'] == '' ) console.log('NO TOKEN')
+
+    // Get profile_data
+    user_info.profile_data = apiRequest(`https://customer.www.linkedin.com/csp-api/profiles/($params:(),account:urn%3Ali%3AenterpriseAccount%3A${String(info.accountId)},profileId:${String(info.profileId)})`,
+    user_info.headers);
+
+    // If a user doesn't have an Azure email then the parameter isn't provided.
+    if(!user_info.profile_data.azureB2CEmailAddress){  
+        // Set to None if there isn't one
+        user_info.profile_data.azureB2CEmailAddress = "None";
+    }
+
+    //
+    user_info.instance_data = findLilInstance(info);
+
+    // Filling in the MID if a member was found
+    if(user_info.profile_data.member){
+	    user_info.MID = user_info.profile_data.member.substring(14);
+    }
+
+    // Searching for the active LiL instance (if one exists) and recording its profile requirement
+    user_info.instance_data.authentications.forEach((auth_type) => {
+	if(auth_type.active){
+		user_info.auth_type = profile_requirement[auth_type.authenticationType];
+	}
+    });
+}
