@@ -48,7 +48,7 @@ function get_user_information(){
     if ( user_info.headers['Csrf-Token'] == '' ) console.log('NO TOKEN')
 
     // Get profile_data
-    user_info.profile_data = apiRequest(`https://customer.www.linkedin.com/csp-api/profiles/($params:(),account:urn%3Ali%3AenterpriseAccount%3A${String(info.accountId)},profileId:${String(info.profileId)})`,
+    user_info.profile_data = api_request(`https://customer.www.linkedin.com/csp-api/profiles/($params:(),account:urn%3Ali%3AenterpriseAccount%3A${String(info.accountId)},profileId:${String(info.profileId)})`,
     user_info.headers);
 
     // If a user doesn't have an Azure email then the parameter isn't provided.
@@ -71,4 +71,19 @@ function get_user_information(){
 		user_info.auth_type = profile_requirement[auth_type.authenticationType];
 	}
     });
+}
+
+function api_request(url,headers){
+	// Takes a URL and Headers and returns the raw API response
+	let d = -1;
+	$.ajax({
+        url,
+        // Async has to be false because each subsequent request depends on the data returned by the one before it
+		async: false,
+		headers,
+		success: function(data){
+			d = data;
+		},
+	});
+	return d;
 }
