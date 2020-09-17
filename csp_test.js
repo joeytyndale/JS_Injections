@@ -17,7 +17,7 @@ var profile_requirement = {
 var user_info = {
     profile_id : '',
     account_id : '',
-    MID : 'None'
+    MID : 'None',
     auth_type : '',
     // Instance data - includes the company ID
     instance_data : '',
@@ -31,6 +31,8 @@ var user_info = {
     // profile_data - Includes the profileIdentity
     profile_data : ''
 }
+
+const API_URL = 'https://customer.www.linkedin.com/csp-api'
 
 function get_user_information(){
     var url = window.location.href;
@@ -48,7 +50,7 @@ function get_user_information(){
     if ( user_info.headers['Csrf-Token'] == '' ) console.log('NO TOKEN')
 
     // Get profile_data
-    user_info.profile_data = api_request(`https://customer.www.linkedin.com/csp-api/profiles/($params:(),account:urn%3Ali%3AenterpriseAccount%3A${String(info.accountId)},profileId:${String(info.profileId)})`,
+    user_info.profile_data = api_request(API_URL + `/profiles/($params:(),account:urn%3Ali%3AenterpriseAccount%3A${String(user_info.account_id)}, profileId:${String(user_info.profile_id)})`,
     user_info.headers);
 
     // If a user doesn't have an Azure email then the parameter isn't provided.
@@ -58,7 +60,7 @@ function get_user_information(){
     }
 
     //
-    user_info.instance_data = findLilInstance(info);
+    user_info.instance_data = find_LIL_instance(info);
 
     // Filling in the MID if a member was found
     if(user_info.profile_data.member){
@@ -86,4 +88,23 @@ function api_request(url,headers){
 		},
 	});
 	return d;
+}
+
+function find_LIL_instance(info, step=0){
+	var found = false;
+	var lil = -1;
+
+	// Iterate through instances looking for an Active Learning instance | Might consider disregarding the status and instead returning all/any LiL instance and displaying their status' 
+	api_request(API_URL + `/applicationInstances?account=urn%3Ali%3AenterpriseAccount%3A${String(user_info.account_id)}&count=50&forPreOrder=false&q=account&start=${String(step)}`,info.headers).elements.forEach((instance) => {
+		if(instance.enterpriseApplication == "urn:li:enterpriseApplication:learning" && instance.status == "ACTIVE"){
+			found = true;
+			lil = instance;
+		}
+	});
+
+	if(!found && step < 250){ // We're only pulling 50 instances per request and some accounts have a LOT of instances. Artificial limit set to 250 to avoid out of control API requests. 
+		return find_LIL_instance(info,step+50);
+	}else{
+		return lil;
+	}
 }
